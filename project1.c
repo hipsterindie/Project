@@ -19,7 +19,7 @@
 #define BUFF_SIZE 1000000
 
 void tokenizeString();
-void removeStopWord(FILE *ifp);
+void removeStopWord(FILE *ifp, FILE *StopWord);
 
 
 
@@ -35,6 +35,9 @@ void main(){
 void removeStopWord(FILE *ifp, FILE *StopWord){
 	
 	FILE *ifp, *StopWord;
+
+	char buff[BUFF_SIZE];
+	char *last_token;
 	
 	//read each line into the buffer
 	while (fgets(buff, BUFF_SIZE, ifp) != NULL){
