@@ -27,42 +27,63 @@ void main(){
 
 	tokenizeString();
 
-	fclose(ifp);
-	fclose(ofp);
-
 }
 
 void removeStopWord(FILE *ifp, FILE *StopWord){
 	
 	FILE *ifp, *StopWord;
 
-	char buff[BUFF_SIZE];
-	char *last_token;
+	char buff[BUFF_SIZE], Stopbuff[BUFF_SIZE];
+	char *ifptoken, *StopWordtoken;
+	
+	char StopWordarray[BUFF_SIZE];
+	int n;
 	
 	//read each line into the buffer
 	while (fgets(buff, BUFF_SIZE, ifp) != NULL){
 		
 		//write the line to stdout
 		fputs(buff, stdout);
-		
+	
 		//new line to seperate stdout
 		printf("\n------------------------------------------\n");
-		
+	
 		//get the first token
-		last_token = strtok(buff, " ");
+		ifptoken = strtok(buff, " ");
+
+
+		while (fgets(Stopbuff, BUFF_SIZE, StopWordtoken) != NULL){
+			StopWordarray[BUFF_SIZE] = strtok(Stopbuff, "\n");
+			n++;
+		}
+
 		
-		//go through the other tokens
-		while (last_token != NULL){
 			
-			last_token = strtok(NULL, " ");
+		//go through the other tokens
+		while (ifptoken != NULL){
+			
+			char *temporary;
+			for (int i = 0; i < n; i++)
+			{
+
+				if (ifptoken != StopWordarray[i]){
+					
+					printf("%s\n", ifptoken);
+					ifptoken = strtok(NULL, " ");
+				}
+			}
+			
+			
+		
 		}
 	
+	}
 }
+
 
 void tokenizeString(){
 	
 	FILE *ifp, *ofp, *StopWord, *SpecialCharacters;
-	char outputFilename[] = "Tokenizedd1.txt";
 
 	char buff[BUFF_SIZE];
 	char *last_token;
@@ -73,14 +94,29 @@ void tokenizeString(){
 		fprintf(stderr, "Can't open input file d1.txt.\n");
 		exit(1);
 	}
-	ofp = fopen(outputFilename, "w");
+
+	ofp = fopen("Tokenizedd1.txt", "w");
 	if (ofp == NULL){
-		fprintf(stderr, "Can't open output file %s.\n", outputFilename);
+		fprintf(stderr, "Can't open output file Tokenizedd1.txt.\n");
 		exit(1);
 	}
-	
+
+	StopWord = fopen("stopwords.txt", "r");
+	if (StopWord == NULL){
+		fprintf(stderr, "Can't open stopwords.txt.\n");
+		exit(1);
+	}
+
+	SpecialCharacters = fopen("specialcharacters.txt", "r");
+	if (SpecialCharacters == NULL){
+		fprintf(stderr, "Can't open specialcharacters.txt.\n");
+		exit(1);
+	}
+
+	removeStopWord(ifp, StopWord);
+
 	//read each line into the buffer
-	while (fgets(buff, BUFF_SIZE, ifp) != NULL){
+/*	while (fgets(buff, BUFF_SIZE, ifp) != NULL){
 		
 		//write the line to stdout
 		fputs(buff, stdout);
@@ -99,8 +135,11 @@ void tokenizeString(){
 		}
 		
 		
-	}
+	}				*/
 	
-
+	fclose(ifp);
+	fclose(ofp);
+	fclose(StopWord);
+	fclose(SpecialCharacters);
 	
 }
